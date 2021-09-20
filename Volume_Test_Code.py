@@ -16,7 +16,7 @@ from fbprophet import Prophet
 # 로그인
 access = "GogjeEOYtbBCoCwsMUdvf7oJTR7lCqKDVUXxa7Za"
 secret = "9lf1zxQURW32yEhZNhWT5U0fnEJAw9bYAP4oLF3l"
-myToken = "xoxb-2469225607505-2456931258802-7uqaTSCZgtmW6j6EutF7UrQZ"
+myToken = "xoxb-2469225607505-2480234013936-VDEJZMFyMAka51vY9sAVESaW"
 
 # 변수 설정
 maxx = 71           #RSI 최대 
