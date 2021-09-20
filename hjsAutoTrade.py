@@ -14,9 +14,9 @@ from pandas import Series
 from fbprophet import Prophet
 
 # 로그인
-access = "GogjeEOYtbBCoCwsMUdvf7oJTR7lCqKDVUXxa7Za"
-secret = "9lf1zxQURW32yEhZNhWT5U0fnEJAw9bYAP4oLF3l"
-myToken = "xoxb-2469225607505-2480234013936-VDEJZMFyMAka51vY9sAVESaW"
+access = "Your Upbit access key"
+secret = "Your Upbit secret key"
+myToken = "xoxb-Your slack token"
 
 # 변수 설정
 maxx = 71           #RSI 최대 
