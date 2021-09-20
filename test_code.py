@@ -42,10 +42,10 @@ def get_start_time(tickers, interval):
     return start_time
 
 # 거래량 조회
-def get_volum_coin(tickers):
+def get_volume_coin(tickers):
     df = pyupbit.get_ohlcv(tickers, interval="day", count=1)
-    volum_coin = df.iloc[0]['volum']
-    return volum_coin
+    volume_coin = df.iloc[0]['volume']
+    return volume_coin
 
 # 현재 가격 가져오기
 def get_current_price(tickers):                      
@@ -140,8 +140,9 @@ xlxs_dir = os.path.join(base_dir, file_nm)
 while True:
 
     # 조사 목록
-    volumlist = []  # 거래량 목록
+    volumelist = []  # 거래량 목록
     coinlist = pyupbit.get_tickers(fiat="KRW")  # 코인종류 목록
+    # coinlist = ["KRW-UPP","KRW-OMG", "KRW-BTC", "KRW-FCT2"] #테스트 코인
     pcplist = []  # 예상종가 목록
     coinname = [] # "KRW-코인이름" 목록
     currentprice = [] # 현재가격 목록
@@ -152,15 +153,14 @@ while True:
     rsilist = []  # RSI 목록
     ma20list = [] #20일선 가격 목록
 
-    # 모든 코인을 거래량 순으로 정렬하기
     for ticker in coinlist:
-        volum_coin = get_volum_coin(ticker)
+        volume_coin = get_volume_coin(ticker)
 
         coinname.append(ticker)
-        volumlist.append(volum_coin)
+        volumelist.append(volume_coin)
 
         topcoin = {'코인이름': coinname,
-                    '거래량' : volumlist}
+                    '거래량' : volumelist}
 
         Top_coin = DataFrame(topcoin)
 
@@ -178,11 +178,9 @@ while True:
                 )
     time.sleep[1]
 
-    # 거래량 상위 40개 찾기
-    top2 = pd.read_excel('topcoin.xlsx')
-    coinlist = top2['코인이름'].head[40].values                                 
+    top2 = pd.read_excel('topcoin.xlsx')                
+    coinlist = top2['코인이름'].head[0:40].values                                 #거래량 상위 40개 찾기
 
-    # 상위 40개 코인을 수익률 순으로 재정렬하기(예상종가 계산) 
     for ticker in coinlist:
         predict_price(ticker)
         current_price = get_current_price(ticker)
@@ -233,31 +231,30 @@ while True:
                 startrow=0,
                 startcol=0,
                 )
-    time.sleep[1]
 
-    # RSI 범위 내 최종 코인 찾기
+    # RSI 범위 내 필터링하기
     top1 = pd.read_excel('topcoin.xlsx')                
     buyone = ((top1['RSI'] > minn) & (top1['RSI'] < maxx))
     buythis = top1[buyone]
     top1coin = buythis['코인이름'].head(1).values
     top1name = buythis['이름'].head(1).values
-    print(top1coin)
-    print(top1name)
+    print(top1coin, "/", top1name)
 
     # 로그인
     upbit = pyupbit.Upbit(access, secret)
     print("오늘은 뭘 사볼까요?")
+
     #시작 메세지 슬랙 전송
     post_message(myToken,"#hjs-autoupbit", top1name + "사볼게요!")
     total = get_balance("KRW")
 
     #A. 매매할 코인이 없는 경우, 1시간 후 준비단계부터 재시작
-    if len(top1coin) == 0 :
+    if (len(top1coin) == 0) :
         post_message(myToken,"#hjs-autoupbit", "지금 없어요...1시간 후에 또 볼게요!")
-        time.sleep(3600)
+        time.sleep(1800)
 
     #B. 매매 코인이 있는 경우, 알고리즘에 따라 매매 시작
-    if len(top1coin) != 0 :
+    if (len(top1coin) != 0) :
         target_price = buythis['목표매수'].head(1).values
         current_price = get_current_price(top1coin[0])
         predicted_close_price = buythis['예상종가'].head(1).values
@@ -268,19 +265,23 @@ while True:
             while True :
                 total = get_balance("KRW")
                 current_price = get_current_price(top1coin[0])
+                buy_average = get_buy_average(top1name[0])   
                 time.sleep(2)                                                                          #2초에 한번씩 현재가격 갱신
-                print(current_price)
-                
+                print(current_price, buy_average)
+
                 #매매 알고리즘
                 if ((total > 5000) and (current_price < predicted_close_price)):                       #해당 코인의 예상종가가 높으면 매매
                     upbit.buy_market_order(top1coin[0], total*0.9995)
-                    buy_average = get_buy_average(top1name[0])
                     post_message(myToken,"#hjs-autoupbit", "샀어요! 시작해볼게요!")
-                    time.sleep(60)
+                    time.sleep(30)
 
                 elif (current_price > (buy_average * sellrate)):                                       #해당 코인가격이 목표가 도달하면 시장가 매도
                     upbit.sell_market_order(top1coin[0], coin)       
                     post_message(myToken,"#hjs-autoupbit", "오케이! 하나 더 찾아볼게요!")
-                    time.sleep(60)
-                    
+                    time.sleep(30)
+
+        elif len(current_price > predicted_close_price) :
+            post_message(myToken,"#hjs-autoupbit", "지금 없어요...10분 후에 다시 볼게요!")
+            time.sleep[600]
+
 #-------------------------------------------------------------
