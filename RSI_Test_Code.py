@@ -250,6 +250,5 @@ while True:
                     
         elif (current_price > 10000) :
             post_message(myToken,"#hjs-autoupbit", "지금 없어요... 5분 후에 다시 볼게요!")
-            time.sleep[300]
-            break        
+            time.sleep(300)   
 #-------------------------------------------------------------
