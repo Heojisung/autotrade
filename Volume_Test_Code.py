@@ -282,6 +282,6 @@ while True:
 
         elif len(current_price > predicted_close_price) :
             post_message(myToken,"#hjs-autoupbit", "지금 없어요...10분 후에 다시 볼게요!")
-            time.sleep[600]
+            time.sleep(600)
 
 #-------------------------------------------------------------
