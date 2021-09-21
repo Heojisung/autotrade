@@ -267,6 +267,6 @@ while True:
         #자동 매매 종료 후 다음 시작 준비
         elif ((buy_average1 > 0) and (buy_average2 > 0) and (coin1 == 0) and (coin2 == 0)) :
             post_message(myToken,"#hjs-autoupbit", "모두 팔았어요! 10분 후 다시 시작할게요!")
-            time.sleep[600]
+            time.sleep(600)
 
 #-------------------------------------------------------------
