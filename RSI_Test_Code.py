@@ -226,6 +226,8 @@ while True:
         coin = get_balance(top1name[0])
 
         if (current_price < 10000):  
+            b = 1
+            s = 1
             #자동 매매 시작
             while True :
                 total = get_balance("KRW")
@@ -237,17 +239,22 @@ while True:
                 time.sleep(5)                                                                          #2초에 한번씩 현재가격 갱신
 
                 #매매 알고리즘
-                if ((total > 5000) and (minb < top1rsi[0] < maxb)):                       #해당 코인의 예상종가가 높으면 매매
+                if ((total > 5000) and (minb < now_rsi < maxb)):                       #해당 코인의 예상종가가 높으면 매매
+                    b = 0
+
+                if b == 0 :
                     upbit.buy_market_order(top1coin[0], total*0.9995)
-                    post_message(myToken,"#hjs-autoupbit", "샀어요! 시작해볼게요!")
+                    post_message(myToken,"#hjs-autoupbit", "지성!! 샀어요! 시작해볼게요!")
                     time.sleep(30)
 
-                elif (mins < top1rsi[0] < maxs):                                       #해당 코인가격이 목표가 도달하면 시장가 매도
+                if ((mins < now_rsi) and (buy_average < current_price)):                                       #해당 코인가격이 목표가 도달하면 시장가 매도
+                    s = 0
+                
+                if s == 0 :
                     upbit.sell_market_order(top1coin[0], coin)       
-                    post_message(myToken,"#hjs-autoupbit", "오케이! 하나 더 찾아볼게요!")
+                    post_message(myToken,"#hjs-autoupbit", "지성! 오케이! 하나 더 찾아볼게요!")
                     time.sleep(30)
                     break
-                    
         elif (current_price > 10000) :
             post_message(myToken,"#hjs-autoupbit", "지금 없어요... 5분 후에 다시 볼게요!")
             time.sleep(300)   
