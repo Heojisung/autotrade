@@ -246,6 +246,7 @@ while True:
                     upbit.buy_market_order(top1coin[0], total*0.9995)
                     post_message(myToken,"#hjs-autoupbit", "지성!! 샀어요! 시작해볼게요!")
                     time.sleep(30)
+                    b = 1
 
                 if ((mins < now_rsi) and (buy_average < current_price)):                                       #해당 코인가격이 목표가 도달하면 시장가 매도
                     s = 0
@@ -254,7 +255,9 @@ while True:
                     upbit.sell_market_order(top1coin[0], coin)       
                     post_message(myToken,"#hjs-autoupbit", "지성! 오케이! 하나 더 찾아볼게요!")
                     time.sleep(30)
+                    s = 1
                     break
+                    
         elif (current_price > 10000) :
             post_message(myToken,"#hjs-autoupbit", "지금 없어요... 5분 후에 다시 볼게요!")
             time.sleep(300)   
