@@ -226,13 +226,12 @@ while True:
         coin = get_balance(top1name[0])
 
         if (current_price < 10000):  
-            b = 0
-            s = 0
             #자동 매매 시작
             while True :
                 total = get_balance("KRW")
                 current_price = get_current_price(top1coin[0])
                 buy_average = get_buy_average(top1name[0])
+                coin = get_balance(top1name[0])
                 data = pyupbit.get_ohlcv(top1coin[0], interval) 
                 now_rsi = rsi(data, 14).iloc[-1]
                 print(now_rsi)
@@ -240,22 +239,14 @@ while True:
 
                 #매매 알고리즘
                 if ((total > 5000) and (minb < now_rsi < maxb)):                       #해당 코인의 예상종가가 높으면 매매
-                    b += 1
-
-                if 0 < b < 2 :
                     upbit.buy_market_order(top1coin[0], total*0.9995)
                     post_message(myToken,"#hjs-autoupbit", "지성!! 샀어요! 시작해볼게요!")
                     time.sleep(30)
-                    b += 1
 
                 if ((mins < now_rsi) and (buy_average < current_price)):                                       #해당 코인가격이 목표가 도달하면 시장가 매도
-                    s += 1
-                
-                if 0 < s < 2 :
                     upbit.sell_market_order(top1coin[0], coin)       
                     post_message(myToken,"#hjs-autoupbit", "지성! 오케이! 하나 더 찾아볼게요!")
                     time.sleep(30)
-                    s += 1
                     break
                     
         elif (current_price > 10000) :
