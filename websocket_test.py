@@ -278,7 +278,8 @@ if len(top1coin) != 0 :
         while True :
             total = get_balance("KRW")
             current_price = get_current_price(top1coin[0])
-            buy_average = get_buy_average(top1name[0])   
+            buy_average = get_buy_average(top1name[0])
+            coin = get_balance(top1name[0])
             time.sleep(2)                                                                          #2초에 한번씩 현재가격 갱신
             print(current_price,buy_average)
 
@@ -287,7 +288,7 @@ if len(top1coin) != 0 :
                 upbit.buy_market_order(top1coin[0], total*0.9995)
                 post_message(myToken,"#hjs-autoupbit", "지성!샀어요! 시작해볼게요!")
                 time.sleep(30)
-
+                
             elif (current_price > (buy_average * sellrate)):                                       #해당 코인가격이 목표가 도달하면 시장가 매도
                 upbit.sell_market_order(top1coin[0], coin)       
                 post_message(myToken,"#hjs-autoupbit", "지성!오케이! 하나 더 찾아볼게요!")
