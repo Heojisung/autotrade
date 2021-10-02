@@ -160,7 +160,7 @@ async def upbit_websocket():
             loop.close()
 
     df = pd.DataFrame(topcoin)
-    top2 = df.sort_values('거래대금', ascending=False)
+    top2 = df.sort_values('등락율', ascending=False)
     top2.to_excel(xlxs_dir,
                 sheet_name='Sheet1',
                 na_rep ='NaN',
@@ -182,7 +182,7 @@ while True:
 
     # 거래량 > 등락율 순으로 상위 1개 코인 선택
     top1 = pd.read_excel('topcoin.xlsx')               
-    buyone = (top1['등락율'] > 2)
+    buyone = (top1['거래대금'] > 150000)
     buythis = top1[buyone]
     top1coin = buythis['코인코드'].head(1).values
     top1name = buythis['코인이름'].head(1).values
