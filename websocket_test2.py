@@ -330,9 +330,9 @@ while True:
         #RSI 범위 내 필터링하기
         top4 = pd.read_excel('topcoin.xlsx')               
         buy4one = ((top4['RSI'] > minn) & (top4['현재가'] < 20000 ))
-        buy4this = top4[buyone]
-        top4coin = buythis['코인코드'].head(1).values
-        top4name = buythis['코인이름'].head(1).values
+        buy4this = top4[buy4one]
+        top4coin = buy4this['코인코드'].head(1).values
+        top4name = buy4this['코인이름'].head(1).values
         print(top4coin, top4name)
 
         # 로그인
