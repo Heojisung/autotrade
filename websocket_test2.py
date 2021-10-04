@@ -24,7 +24,7 @@ myToken = "xoxb-Your slack token"
 
 # 변수 설정
 minn = 67           #RSI 최소
-sellrate = 1.05     #목표수익률
+sellrate = 1.03     #목표수익률
 interval = "days"    # interval
 ticker = pyupbit.get_tickers(fiat="KRW")    #ticker
 resettime = 300     #재시작 시간(초)
