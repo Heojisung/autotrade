@@ -22,6 +22,7 @@ access = "YOUR Upbit access key"
 secret = "YOUR Upbit secret key"
 myToken = "xoxb-slack Token"
 
+
 # 변수 설정
 maxx = 65           #RSI 최대
 minn = 29           #RSI 최소
@@ -177,8 +178,11 @@ async def upbit_websocket():
 #-------------------------------------------------------------
 
 # [간단 설명]
-# 1) 9시, 13시 ,17시에  15분 초단타 매매 실행
-# 2) 나머지 시간에는 60분봉 RSI 기반으로 구매
+# 1) [등락율순 / 거래대금 > 150,000 / 현재가 < 20,000]  9시 1분 매수 -  9시 6분 매도,  9시 7분 매수 -  9시 15분 매도
+# 2) [등락율순 / 거래대금 > 150,000 / 현재가 < 20,000] 13시 1분 매수 - 13시 6분 매도, 13시 7분 매수 - 13시 15분 매도
+# 3) [등락율순 / 거래대금 > 150,000 / 현재가 < 20,000] 17시 1분 매수 - 17시 6분 매도, 17시 7분 매수 - 17시 15분 매도
+# 2) [등락율순 / 거래대금 > 150,000 / 현재가 < 20,000] 17시 15분 ~ 익일 8시 59분
+# 3) 나머지 시간에는 60분봉 RSI 기반으로 구매
 
 #--------------------------AutoTrade--------------------------
 while True:
@@ -219,14 +223,14 @@ while True:
         # 로그인
         upbit = pyupbit.Upbit(access, secret)
         #시작 메세지 슬랙 전송
-        post_message(myToken,"#hjs-autoupbit", "○__!" + top1name + "사볼게요!")
+        post_message(myToken,"#hjs-autoupbit", "○지성!" + top1name + "사볼게요!")
         time.sleep(2)
         total = get_balance('KRW')
 
 
         #A. 매매할 코인이 없는 경우, 일정 시간 후 준비단계부터 재시작
         if len(top1coin) == 0 :
-            post_message(myToken,"#hjs-autoupbit", "○__! 지금 없어요...5분 후에 또 볼게요!")
+            post_message(myToken,"#hjs-autoupbit", "○지성! 지금 없어요...5분 후에 또 볼게요!")
             time.sleep(resettime)
 
         #B. 매매 시작
@@ -261,53 +265,53 @@ while True:
                     if ((total > 5000) and (ma > 0)):                       #해당 코인이 볼린더 상단이면 구매
                         upbit.buy_market_order(top1coin[0], total*0.9995)
                         buy_average = current_price
-                        post_message(myToken,"#hjs-autoupbit", "○__!" + top1name + "샀어요! 시작해볼게요!")
+                        post_message(myToken,"#hjs-autoupbit", "○지성!" + top1name + "샀어요! 시작해볼게요!")
                         time.sleep(30)
 
                     if start_time + datetime.timedelta(minutes=6) < now < start_time + datetime.timedelta(minutes=7):       # 09:06분 매도
                         upbit.sell_market_order(top1coin[0], coin)       
-                        post_message(myToken,"#hjs-autoupbit", "○__!" + top1name + "이거 팔고, 다음꺼 살게!")
-                        time.sleep(10)
+                        post_message(myToken,"#hjs-autoupbit", "○지성!" + top1name + "이거 팔고, 다음꺼 살게!")
+                        time.sleep(60)
                         break
 
                     if start_time + datetime.timedelta(minutes=15) < now < start_time + datetime.timedelta(minutes=16):       # 09:15분 매도
                         upbit.sell_market_order(top1coin[0], coin)       
-                        post_message(myToken,"#hjs-autoupbit", "○__!" + top1name + "이거 팔고, 다음꺼 살게!")
-                        time.sleep(10)
+                        post_message(myToken,"#hjs-autoupbit", "○지성!" + top1name + "이거 팔고, 다음꺼 살게!")
+                        time.sleep(60)
                         break
 
                     if start_time + datetime.timedelta(minutes=246) < now < start_time + datetime.timedelta(minutes=247):       # 13:06분 매도
                         upbit.sell_market_order(top1coin[0], coin)       
-                        post_message(myToken,"#hjs-autoupbit", "○__!" + top1name + "이거 팔고, 다음꺼 살게!")
-                        time.sleep(10)
+                        post_message(myToken,"#hjs-autoupbit", "○지성!" + top1name + "이거 팔고, 다음꺼 살게!")
+                        time.sleep(60)
                         break
 
                     if start_time + datetime.timedelta(minutes=255) < now < start_time + datetime.timedelta(minutes=256):       # 13:15분 매도
                         upbit.sell_market_order(top1coin[0], coin)       
-                        post_message(myToken,"#hjs-autoupbit", "○__!" + top1name + "이거 팔고, 다음꺼 살게!")
-                        time.sleep(10)
+                        post_message(myToken,"#hjs-autoupbit", "○지성!" + top1name + "이거 팔고, 다음꺼 살게!")
+                        time.sleep(60)
                         break
 
                     if start_time + datetime.timedelta(minutes=486) < now < start_time + datetime.timedelta(minutes=487):       # 17:06분 매도
                         upbit.sell_market_order(top1coin[0], coin)       
-                        post_message(myToken,"#hjs-autoupbit", "○__!" + top1name + "이거 팔고, 다음꺼 살게!")
-                        time.sleep(10)
+                        post_message(myToken,"#hjs-autoupbit", "○지성!" + top1name + "이거 팔고, 다음꺼 살게!")
+                        time.sleep(60)
                         break
 
                     if start_time + datetime.timedelta(minutes=495) < now < start_time + datetime.timedelta(minutes=496):       # 17:15분 매도
                         upbit.sell_market_order(top1coin[0], coin)       
-                        post_message(myToken,"#hjs-autoupbit", "○__!" + top1name + "이거 팔고, 다음꺼 살게!")
-                        time.sleep(10)
+                        post_message(myToken,"#hjs-autoupbit", "○지성!" + top1name + "이거 팔고, 다음꺼 살게!")
+                        time.sleep(60)
                         break
 
                     elif (current_price < ma1):                                       #볼린저밴드 하단 통과 시 손절 매도
                         upbit.sell_market_order(top1coin[0], coin)       
-                        post_message(myToken,"#hjs-autoupbit", "○__!" + top1name + "이건 손절할게!")
+                        post_message(myToken,"#hjs-autoupbit", "○지성!" + top1name + "이건 손절할게!")
                         time.sleep(30)
                         break
 
             elif (ma < 0) :             #해당 코인이 볼린더 상단이면 코인 재조사 시작
-                post_message(myToken,"#hjs-autoupbit", "○__! 지금 없어요...5분 후에 다시 볼게요!")
+                post_message(myToken,"#hjs-autoupbit", "○지성! 지금 없어요...5분 후에 다시 볼게요!")
                 time.sleep(resettime)
 
 
@@ -324,7 +328,7 @@ while True:
         for ticker in coin3list:
             currencylist = ticker.split('-')[1]
             current_price = get_current_price(ticker)
-            data = pyupbit.get_ohlcv(ticker, interval='minutes60') 
+            data = pyupbit.get_ohlcv(ticker, interval='minutes1') 
             now_rsi = rsi(data, 14).iloc[-1]
             time.sleep(0.5)
             print(currencylist)
@@ -362,13 +366,13 @@ while True:
         # 로그인
         upbit = pyupbit.Upbit(access, secret)
         #시작 메세지 슬랙 전송
-        post_message(myToken,"#hjs-autoupbit", "△__!" + top4name + "사볼게요!")
+        post_message(myToken,"#hjs-autoupbit", "△지성!" + top4name + "사볼게요!")
         time.sleep(2)
         total = get_balance('KRW')
 
         #A. 매매할 코인이 없는 경우, 일정 시간 후 준비단계부터 재시작
         if len(top4coin) == 0 :
-            post_message(myToken,"#hjs-autoupbit", "△__! 지금 없어요...5분 후에 또 볼게요!")
+            post_message(myToken,"#hjs-autoupbit", "△지성! 지금 없어요...5분 후에 또 볼게요!")
             time.sleep(resettime)
 
         #B. 매매 시작
@@ -379,7 +383,7 @@ while True:
             currencylist = top4coin[0].split('-')[1]
             time.sleep(1) 
 
-            data = pyupbit.get_ohlcv(top4coin[0], interval='minutes60') 
+            data = pyupbit.get_ohlcv(top4coin[0], interval='minutes1') 
             now_rsi = rsi(data, 14).iloc[-1]
 
             ma2 = get_ma20b(top4coin[0])
@@ -393,7 +397,7 @@ while True:
                     current_price = get_current_price(top4coin[0])
                     coin = get_balance(top4name[0])
                     now = datetime.datetime.now()
-                    data = pyupbit.get_ohlcv(top4coin[0], interval='minutes60') 
+                    data = pyupbit.get_ohlcv(top4coin[0], interval='minutes1') 
                     now_rsi = rsi(data, 14).iloc[-1]
                     ma1 = get_ma20b(top4coin[0])
                     schedule.run_pending()
@@ -404,29 +408,29 @@ while True:
                     if ((total > 5000) and (ma > 0)):                       #해당 코인이 볼린더 상단이면 구매
                         upbit.buy_market_order(top4coin[0], total*0.9995)
                         buy_average = current_price
-                        post_message(myToken,"#hjs-autoupbit", "△__!" + top4name + "샀어요! 시작해볼게요!")
+                        post_message(myToken,"#hjs-autoupbit", "△지성!" + top4name + "샀어요! 시작해볼게요!")
                         time.sleep(30)
 
                     if (current_price > (buy_average * 1.1)):                                       #해당 코인가격이 10% 상승하면 시장가 익절
                         upbit.sell_market_order(top4coin[0], coin)
-                        post_message(myToken,"#hjs-autoupbit", "△__! 오케이! 10% 하나 더 찾아볼게요!")
+                        post_message(myToken,"#hjs-autoupbit", "△지성! 오케이! 10% 하나 더 찾아볼게요!")
                         time.sleep(30)
                         break
 
                     if (now_rsi > maxx):                                       #RSI가 65 이상이면 시장가 익정
                         upbit.sell_market_order(top4coin[0], coin)
-                        post_message(myToken,"#hjs-autoupbit", "△__! 오케이! 10% 하나 더 찾아볼게요!")
+                        post_message(myToken,"#hjs-autoupbit", "△지성! 오케이! 10% 하나 더 찾아볼게요!")
                         time.sleep(30)
                         break
 
                     elif end_time - datetime.timedelta(minutes=1) < now < end_time:       #08:59시에 전량 매도
                         upbit.sell_market_order(top4coin[0], coin)       
-                        post_message(myToken,"#hjs-autoupbit", "△__!" + top4name + "이거 팔고, 다음꺼 볼게!")
+                        post_message(myToken,"#hjs-autoupbit", "△지성!" + top4name + "이거 팔고, 다음꺼 볼게!")
                         time.sleep(121)
                         break
 
             elif (ma < 0) :             #해당 코인이 볼린더 상단이면 코인 재조사 시작
-                post_message(myToken,"#hjs-autoupbit", "△__! 지금 없어요...5분 후에 다시 볼게요!")
+                post_message(myToken,"#hjs-autoupbit", "△지성! 지금 없어요...5분 후에 다시 볼게요!")
                 time.sleep(resettime)     
 
 
@@ -481,13 +485,13 @@ while True:
         # 로그인
         upbit = pyupbit.Upbit(access, secret)
         #시작 메세지 슬랙 전송
-        post_message(myToken,"#hjs-autoupbit", "□__!" + top4name + "사볼게요!")
+        post_message(myToken,"#hjs-autoupbit", "□지성!" + top4name + "사볼게요!")
         time.sleep(2)
         total = get_balance('KRW')
 
         #A. 매매할 코인이 없는 경우, 일정 시간 후 준비단계부터 재시작
         if len(top4coin) == 0 :
-            post_message(myToken,"#hjs-autoupbit", "□__! 지금 없어요...5분 후에 또 볼게요!")
+            post_message(myToken,"#hjs-autoupbit", "□지성! 지금 없어요...5분 후에 또 볼게요!")
             time.sleep(resettime)
 
         #B. 매매 시작
@@ -523,47 +527,47 @@ while True:
                     if ((total > 5000) and (ma > 0)):                       #해당 코인이 볼린더 상단이면 구매
                         upbit.buy_market_order(top4coin[0], total*0.9995)
                         buy_average = current_price
-                        post_message(myToken,"#hjs-autoupbit", "□__!" + top4name + "샀어요! 시작해볼게요!")
+                        post_message(myToken,"#hjs-autoupbit", "□지성!" + top4name + "샀어요! 시작해볼게요!")
                         time.sleep(30)
 
                     if (current_price > (buy_average * sellrate)):                                       #해당 코인가격이 목표가 도달하면 시장가 익절
                         upbit.sell_market_order(top4coin[0], coin)
-                        post_message(myToken,"#hjs-autoupbit", "□__! 오케이! 하나 더 찾아볼게요!")
+                        post_message(myToken,"#hjs-autoupbit", "□지성! 오케이! 하나 더 찾아볼게요!")
                         time.sleep(30)
                         break
 
                     if end_time - datetime.timedelta(minutes=1) < now < end_time:       #08:59시에 전량 매도
                         upbit.sell_market_order(top4coin[0], coin)       
-                        post_message(myToken,"#hjs-autoupbit", "□__!" + top4name + "이거 팔고, 다음꺼 볼게!")
+                        post_message(myToken,"#hjs-autoupbit", "□지성!" + top4name + "이거 팔고, 다음꺼 볼게!")
                         time.sleep(121)
                         break
 
                     if start_time + datetime.timedelta(minutes=239) < now < start_time + datetime.timedelta(minutes=240):       #12:59시에 전량 매도
                         upbit.sell_market_order(top4coin[0], coin)       
-                        post_message(myToken,"#hjs-autoupbit", "□__!" + top4name + "이거 팔고, 다음꺼 볼게!")
+                        post_message(myToken,"#hjs-autoupbit", "□지성!" + top4name + "이거 팔고, 다음꺼 볼게!")
                         time.sleep(121)
                         break
 
                     if start_time + datetime.timedelta(minutes=479) < now < start_time + datetime.timedelta(minutes=480):       #16:59시에 전량 매도
                         upbit.sell_market_order(top4coin[0], coin)       
-                        post_message(myToken,"#hjs-autoupbit", "□__!" + top4name + "이거 팔고, 다음꺼 볼게!")
+                        post_message(myToken,"#hjs-autoupbit", "□지성!" + top4name + "이거 팔고, 다음꺼 볼게!")
                         time.sleep(121)
                         break                    
 
                     elif (current_price < ma2):                                       #볼린저밴드 하단 통과 시 손절 매도
                         upbit.sell_market_order(top4coin[0], coin)       
-                        post_message(myToken,"#hjs-autoupbit", "□__!" + top4name + "이건 손절할게!")
+                        post_message(myToken,"#hjs-autoupbit", "□지성!" + top4name + "이건 손절할게!")
                         time.sleep(30)
                         break
 
                     if (current_price < (buy_average * 0.82)):                                       #해당 코인가격이 18% 빠지면 시장가 손절
                         upbit.sell_market_order(top4coin[0], coin)
-                        post_message(myToken,"#hjs-autoupbit", "□__!" + top4name + "손절할게!")
+                        post_message(myToken,"#hjs-autoupbit", "□지성!" + top4name + "손절할게!")
                         time.sleep(30)
                         break
 
             elif (ma < 0) :             #해당 코인이 볼린더 상단이면 코인 재조사 시작
-                post_message(myToken,"#hjs-autoupbit", "□__! 지금 없어요...5분 후에 다시 볼게요!")
+                post_message(myToken,"#hjs-autoupbit", "지성! 지금 없어요...5분 후에 다시 볼게요!")
                 time.sleep(resettime)     
 
 #-------------------------------------------------------------
