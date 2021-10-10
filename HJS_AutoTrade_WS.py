@@ -21,7 +21,6 @@ access = "Your Upbit access key"
 secret = "Your Upbit secret key"
 myToken = "xoxb-Slack Token"
 
-
 # 변수 설정
 maxx = 68           #RSI 최대
 minn = 28           #RSI 최소
@@ -301,6 +300,7 @@ while True:
         #A. 매매할 코인이 없는 경우, 일정 시간 후 준비단계부터 재시작
         if len(top1coin) == 0 :
             post_message(myToken,"#hjs-autoupbit", "지성! 지금 없어요...5분 후에 또 볼게요!")
+            print("쉴게! 303")
             time.sleep(resettime)
 
         #B. 매매 시작
@@ -335,6 +335,7 @@ while True:
 
             elif (ma < 0) :             #해당 코인이 볼린더 상단이면 코인 재조사 시작
                 post_message(myToken,"#hjs-autoupbit", "○지성! 지금 없어요...5분 후에 다시 볼게요!")
+                print("쉴게! 338")
                 time.sleep(resettime)
 
 
@@ -405,6 +406,7 @@ while True:
         #A. 매매할 코인이 없는 경우, 일정 시간 후 준비단계부터 재시작
         if len(top4coin) == 0 :
             post_message(myToken,"#hjs-autoupbit", "△지성! 지금 없어요...5분 후에 또 볼게요!")
+            print("쉴게! 409")
             time.sleep(resettime)
 
         #B. 매매 시작
@@ -449,6 +451,7 @@ while True:
 
             elif (ma < 0) :             #해당 코인이 볼린더 상단이면 코인 재조사 시작
                 post_message(myToken,"#hjs-autoupbit", "△지성! 지금 없어요...5분 후에 다시 볼게요!")
+                print("쉴게! 454") 
                 time.sleep(resettime)     
 
 # [3. 상시 단타]-------------------------------------------------------------------------#
@@ -506,11 +509,6 @@ while True:
         buythis = top2[buyone]
         top4coin = buythis['코인코드'].head(2).values
         top4name = buythis['코인이름'].head(2).values
-        top3coin = list(set(top4coin) - set(top1coin))
-        top2coin = top3coin[0]
-        top2name = top3coin[0].split('-')[1]
-        print(top4coin, top4name)
-        print(top2coin, top2name)
 
         # 로그인
         upbit = pyupbit.Upbit(access, secret)
@@ -520,11 +518,19 @@ while True:
         #A. 매매할 코인이 없는 경우, 일정 시간 후 준비단계부터 재시작
         if len(top4coin) == 0 :
             post_message(myToken,"#hjs-autoupbit", "△지성! 지금 없어요...5분 후에 또 볼게요!")
+            print("쉴게! 521")
             time.sleep(resettime)
+
 
         #B. 매매 시작
         if len(top4coin) != 0 :
             # 순위 조사
+            top3coin = list(set(top4coin) - set(top1coin))
+            top2coin = top3coin[0]
+            top2name = top3coin[0].split('-')[1]
+            print(top4coin, top4name)
+            print(top2coin, top2name)
+
             current_price2 = get_current_price(top2coin)
 
             data = pyupbit.get_ohlcv(top2coin, interval='minutes60') 
@@ -578,5 +584,6 @@ while True:
 
             elif (len(top4coin) == 0) :             #해당 코인이 볼린더 상단이면 코인 재조사 시작
                 post_message(myToken,"#hjs-autoupbit", "△지성! 지금 없어요...5분 후에 다시 볼게요!")
+                print("쉴게! 587")
                 time.sleep(resettime)
 #-------------------------------------------------------------
