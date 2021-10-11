@@ -267,15 +267,15 @@ while True:
    
 # [1. 일일 단타]-------------------------------------------------------------------------#
 # 목표 : 20%
-#  1) 정보 수집 / 09:00:30
-#  2) 조사 시작 / 09:00:45
-#  3) 매매 시작 / 09:01:00
-#  4) 매도 <- 해당 코드는 [2. 상시 단타]에 포함
+#  1) 정보 수집 / 09:00:10
+#  2) 조사 시작 / 09:00:20
+#  3) 매매 시작 / 09:00:30
+#  4) 매도 <- 해당 코드는 [3. 상시 단타]에 포함
 #   ① 익일 08:59, 시장가 매도
 #   ② 20% 달성 시, 시장가 익절
 #   ③ -18% 도달 시, 지정가 손절
 # -------------------------------------------------------------------------------------#
-    if (start_time + datetime.timedelta(seconds=30) < now < start_time + datetime.timedelta(seconds=40)) :
+    if (start_time + datetime.timedelta(seconds=10) < now < start_time + datetime.timedelta(seconds=30)) :
 
         # 업비트 현황 조사
         loop = asyncio.get_event_loop()
@@ -341,13 +341,13 @@ while True:
 
 # [2. 9시 단타]-------------------------------------------------------------------------#
 # 목표 : 익절
-#  1) 정보 수집 / 09:01:00
-#  2) 조사 시작 / 09:02:15
-#  3) 매매 시작 / 09:02:30
+#  1) 정보 수집 / 09:01:30
+#  2) 조사 시작 / 09:02:45
+#  3) 매매 시작 / 09:03:00
 #  4) 매도
 #   ① 09:10, 시장가 매도
 # -------------------------------------------------------------------------------------#
-    elif start_time + datetime.timedelta(seconds=40) < now < start_time + datetime.timedelta(seconds=60):
+    elif start_time + datetime.timedelta(seconds=40) < now < start_time + datetime.timedelta(seconds=70):
         # 업비트 현황 조사
         loop = asyncio.get_event_loop()
         loop.run_until_complete(upbit_websocket_always())
@@ -392,11 +392,6 @@ while True:
         buythis = top3[buyone]
         top4coin = buythis['코인코드'].head(2).values
         top4name = buythis['코인이름'].head(2).values
-        top3coin = list(set(top4coin) - set(top1coin))
-        top2coin = top3coin[0]
-        top2name = top3coin[0].split('-')[1]
-        print(top4coin, top4name)
-        print(top2coin, top2name)
 
         # 로그인
         upbit = pyupbit.Upbit(access, secret)
@@ -412,6 +407,12 @@ while True:
         #B. 매매 시작
         if len(top4coin) != 0 :
             # 순위 조사
+            top3coin = list(set(top4coin) - set(top1coin))
+            top2coin = top3coin[0]
+            top2name = top3coin[0].split('-')[1]
+            print(top4coin, top4name)
+            print(top2coin, top2name)
+
             current_price2 = get_current_price(top2coin)
 
             data = pyupbit.get_ohlcv(top2coin, interval='minutes10') 
@@ -564,13 +565,13 @@ while True:
                         time.sleep(30)
 
                     if (current_price2 > (buy_average2 * sellrate2)):                                       #상시 코인가격이 2% 상승하면 지정가 익절
-                        upbit.sell_limit_order(top2coin, buy_average2*sellrate2, coin2)       
+                        upbit.sell_limit_order(top2coin, current_price2, coin2)       
                         post_message(myToken,"#hjs-autoupbit", "지성! 오케이! 2% 하나 더 찾아볼게요!")
                         time.sleep(10)
                         break
 
                     if (current_price1 > (buy_average1 * sellrate1)):                                       #일일 코인가격이 20% 상승하면 시장가 익절
-                        upbit.sell_limit_order(top1coin[0], buy_average1*sellrate1, coin1)       
+                        upbit.sell_limit_order(top1coin[0], current_price1, coin1)       
                         post_message(myToken,"#hjs-autoupbit", "지성! 오케이! 20% 완료!")
                         time.sleep(10)
                         break
@@ -579,7 +580,7 @@ while True:
                         upbit.sell_market_order(top1coin[0], coin1)       
                         upbit.sell_market_order(top2coin, coin2)       
                         post_message(myToken,"#hjs-autoupbit", "지성! 좋은 아침, 오늘꺼 준비할게!")
-                        time.sleep(91)
+                        time.sleep(71)
                         break
 
             elif (len(top4coin) == 0) :             #해당 코인이 볼린더 상단이면 코인 재조사 시작
